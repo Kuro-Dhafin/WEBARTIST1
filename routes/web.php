@@ -17,6 +17,7 @@ use App\Http\Controllers\Admin\OrderController as AdminOrderController;
 
 // Public / Guest
 Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::get('services', [ServiceController::class, 'index'])->name('services.index');
 
 // Buyer Routes
 Route::middleware(['auth','role:buyer'])->prefix('buyer')->name('buyer.')->group(function () {
@@ -76,6 +77,8 @@ Route::middleware(['auth','verified','role:admin'])->prefix('admin')->name('admi
     Route::get('services', [AdminServiceController::class, 'index'])->name('services.index');
     Route::post('services/{service}/approve', [AdminServiceController::class, 'approve'])->name('services.approve');
     Route::post('services/{service}/reject', [AdminServiceController::class, 'reject'])->name('services.reject');
+    Route::patch('services/{service}', [AdminServiceController::class, 'update'])->name('services.update');
+    Route::patch('services/{service}', [AdminServiceController::class, 'update'])->name('services.update');
 
     // Orders
     Route::get('orders', [AdminOrderController::class, 'index'])->name('orders.index');
