@@ -33,11 +33,8 @@ class ServiceController extends Controller
         $data['artist_id'] = $request->user()->id;
 
         if ($request->hasFile('thumbnail')) {
-            $file = $request->file('thumbnail');
-            $filename = time().'_'.$file->getClientOriginalName();
-            $file->move(public_path('uploads/services'), $filename);
-            $thumbnailPath = 'uploads/services/' . $filename;
-            $data['thumbnail'] = $thumbnailPath;
+            $data['thumbnail'] = $request->file('thumbnail')
+                ->store('services', 'public');
         }
 
         $service = Service::create($data);
@@ -61,13 +58,11 @@ class ServiceController extends Controller
 
         // Handle new thumbnail
         if ($request->hasFile('thumbnail')) {
-            if ($service->thumbnail && File::exists(public_path($service->thumbnail))) {
-                File::delete(public_path($service->thumbnail));
+            if ($service->thumbnail) {
+                Storage::disk('public')->delete($service->thumbnail);
             }
-            $file = $request->file('thumbnail');
-            $filename = time().'_'.$file->getClientOriginalName();
-            $file->move(public_path('uploads/services'), $filename);
-            $data['thumbnail'] = 'uploads/services/' . $filename;
+            $data['thumbnail'] = $request->file('thumbnail')
+                ->store('services', 'public');
         }
 
         $service->update($data);
